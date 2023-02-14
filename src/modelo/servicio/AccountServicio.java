@@ -16,7 +16,7 @@ import modelo.dao.Account.AccountDaoHibernate;
 import modelo.util.exceptions.InstanceNotFoundException;
 import util.SessionFactoryUtil;
 
-public class AccountServicio {
+public class AccountServicio implements IAccountServicio{
 
 	private AccountDao accDao;
 	private AccMovementDao accMovDao;
@@ -26,7 +26,7 @@ public class AccountServicio {
 		this.accMovDao = new AccMovementDaoHibernate();
 	}
 
-	public Account findById(int accId) throws InstanceNotFoundException {
+	public Account findAccountById(int accId) throws InstanceNotFoundException {
 		Session session = SessionFactoryUtil.getSessionFactory().openSession();
 		Account acc = accDao.find(session, accId);
 		session.close();
@@ -34,7 +34,7 @@ public class AccountServicio {
 
 	}
 
-	public AccMovement transferir(int accOrigen, int accDestino, double cantidad)
+	public AccMovement transferir(int accOrigenId, int accDestinoId, double cantidad)
 			throws SaldoInsuficienteException, InstanceNotFoundException, UnsupportedOperationException {
 		
 		AccMovement accMovement = null;
@@ -46,7 +46,7 @@ public class AccountServicio {
 		if (cantidad > 0) {
 			session = SessionFactoryUtil.getSessionFactory().openSession();
 			try {
-				cuentaOrigen = accDao.find(session, accOrigen);
+				cuentaOrigen = accDao.find(session, accOrigenId);
 
 				if (cuentaOrigen.getAmount().compareTo(cantidadBD) < 0) {
 					throw new SaldoInsuficienteException(
@@ -62,7 +62,7 @@ public class AccountServicio {
 
 				tx = session.beginTransaction();
 
-				Account cuentaDestino = accDao.find(session, 1);
+				Account cuentaDestino = accDao.find(session, accDestinoId);
 				cuentaOrigen.setAmount(cuentaOrigen.getAmount().subtract(cantidadBD));
 
 				cuentaDestino.setAmount(cuentaDestino.getAmount().add(cantidadBD));

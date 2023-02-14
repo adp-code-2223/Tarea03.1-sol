@@ -165,7 +165,7 @@ public class TxWindow extends JFrame {
 					try {
 						int accId = Integer.parseInt(textIntroducido);
 
-						Account account = accountServicio.findById(accId);
+						Account account = accountServicio.findAccountById(accId);
 
 						if (e.getSource() == textFieldOrigen) {
 							label_saldo_origen.setText(String.valueOf(account.getAmount()));
@@ -215,8 +215,8 @@ public class TxWindow extends JFrame {
 						if (accMovement != null) {
 							addMensaje(true, "Se ha producido el movimiento: " + accMovement);
 
-							Account destino = accountServicio.findById(accIdDestino);
-							Account origen = accountServicio.findById(accIdOrigen);
+							Account destino = accountServicio.findAccountById(accIdDestino);
+							Account origen = accountServicio.findAccountById(accIdOrigen);
 
 							label_saldo_origen.setText(String.valueOf(origen.getAmount()));
 							label_saldo_destino.setText(String.valueOf(destino.getAmount()));
