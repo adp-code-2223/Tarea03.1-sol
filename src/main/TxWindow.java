@@ -31,11 +31,14 @@ public class TxWindow extends JFrame {
 	private JTextField textFieldOrigen;
 	private JTextField textFieldDestino;
 	private JTextField textField_cantidad_transfer;
-	private AccountServicio accountServicio;
+	
 	private JTextArea mensajes_text_Area;
 	private JLabel label_saldo_origen;
 	private JLabel label_saldo_destino;
 	private JButton btnTransferir;
+	
+	
+	private AccountServicio accountServicio;
 
 	/**
 	 * Launch the application.
