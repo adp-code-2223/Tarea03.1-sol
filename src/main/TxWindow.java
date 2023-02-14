@@ -10,8 +10,8 @@ import exceptions.SaldoInsuficienteException;
 import modelo.AccMovement;
 import modelo.Account;
 import modelo.servicio.AccountServicio;
-import modelo.util.exceptions.InstanceNotFoundException;
-
+import modelo.servicio.IAccountServicio;
+import exceptions.InstanceNotFoundException;
 import javax.swing.JLabel;
 import java.awt.Font;
 
@@ -38,7 +38,7 @@ public class TxWindow extends JFrame {
 	private JButton btnTransferir;
 	
 	
-	private AccountServicio accountServicio;
+	private IAccountServicio accountServicio;
 
 	/**
 	 * Launch the application.
@@ -62,6 +62,7 @@ public class TxWindow extends JFrame {
 	public TxWindow() {
 
 		accountServicio = new AccountServicio();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 847, 772);
 		contentPane = new JPanel();

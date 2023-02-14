@@ -3,7 +3,7 @@ package modelo.servicio;
 import exceptions.SaldoInsuficienteException;
 import modelo.AccMovement;
 import modelo.Account;
-import modelo.util.exceptions.InstanceNotFoundException;
+import exceptions.InstanceNotFoundException;
 
 public interface IAccountServicio {
 	public Account findAccountById(int accId) throws InstanceNotFoundException ;

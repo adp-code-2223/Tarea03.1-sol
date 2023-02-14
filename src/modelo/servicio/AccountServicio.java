@@ -10,7 +10,7 @@ import exceptions.SaldoInsuficienteException;
 import modelo.AccMovement;
 import modelo.Account;
 
-import modelo.util.exceptions.InstanceNotFoundException;
+import exceptions.InstanceNotFoundException;
 import util.SessionFactoryUtil;
 
 public class AccountServicio implements IAccountServicio{
