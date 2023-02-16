@@ -38,6 +38,9 @@ import javax.swing.JOptionPane;
 
 import java.awt.Rectangle;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.ListSelectionModel;
 
 public class TxWindow extends JFrame {
 
@@ -48,6 +51,7 @@ public class TxWindow extends JFrame {
 
 	private IDepartamentoServicio departamentoServicio;
 	private CreateNewDeptDialog createDialog;
+	private JButton btnModificarDepartamento;
 
 	/**
 	 * Launch the application.
@@ -107,7 +111,43 @@ public class TxWindow extends JFrame {
 		// scrollPane_1.setBounds(284, 237, 505, -200);
 		panel.add(scrollPanel_in_JlistAllDepts);
 
+		btnModificarDepartamento = new JButton("Modificar departamento");
+		btnModificarDepartamento.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedIx = JListAllDepts.getSelectedIndex();
+				Departamento d = (Departamento) JListAllDepts.getModel().getElementAt(selectedIx);
+				if (d != null) {
+					JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
+
+					createDialog = new CreateNewDeptDialog(owner, "Modificar departamento", Dialog.ModalityType.DOCUMENT_MODAL, d);
+					showDialog();
+				}
+			}
+		});
+
 		JListAllDepts = new JList();
+		JListAllDepts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JListAllDepts.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int[] selectedIx = TxWindow.this.JListAllDepts.getSelectedIndices();
+				for (int i = 0; i < selectedIx.length; i++) {
+					Departamento d = (Departamento) TxWindow.this.JListAllDepts.getModel().getElementAt(selectedIx[i]);
+					if (d != null) {
+						addMensaje(true, "Se ha seleccionado el d: " + d);
+						btnModificarDepartamento.setEnabled(true);
+					} else {
+						btnModificarDepartamento.setEnabled(false);
+
+					}
+				}
+				if (selectedIx.length == 0) {
+					btnModificarDepartamento.setEnabled(false);
+
+				}
+
+			}
+		});
 		panel.add(JListAllDepts);
 
 		JListAllDepts.setBounds(403, 37, 377, 200);
@@ -118,13 +158,18 @@ public class TxWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
-				createDialog = new CreateNewDeptDialog(owner, Dialog.ModalityType.DOCUMENT_MODAL);
+				createDialog = new CreateNewDeptDialog(owner, "Crear nuevo departamento", Dialog.ModalityType.DOCUMENT_MODAL, null);
 				showDialog();
 			}
 		});
 		btnCrearNuevoDepartamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnCrearNuevoDepartamento.setBounds(50, 85, 208, 36);
 		panel.add(btnCrearNuevoDepartamento);
+
+		btnModificarDepartamento.setEnabled(false);
+		btnModificarDepartamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnModificarDepartamento.setBounds(50, 139, 208, 36);
+		panel.add(btnModificarDepartamento);
 		// scrollPanel_in_JlistAllDepts.setViewportView(JListAllDepts);
 
 		ActionListener showAllDepartamentosActionListener = new ActionListener() {
@@ -152,19 +197,21 @@ public class TxWindow extends JFrame {
 		Departamento departamentoACrear = createDialog.getResult();
 		if (departamentoACrear != null) {
 
-			try {
-				Departamento nuevo = departamentoServicio.create(departamentoACrear);
-				if(nuevo!=null) {
-					addMensaje(true, "se ha creado un departamento con id: " + nuevo.getDeptno());
-				}
-				else {
-					addMensaje(true, " El departamento no se ha creado correctamente");
-				}
-				getAllDepartamentos();
-			} catch (Exception ex) {
-				addMensaje(true, "Ha ocurrido un error y no se ha podido crear el departamento");
-			}
+			saveOrUpdate(departamentoACrear);
+		}
+	}
 
+	private void saveOrUpdate(Departamento dept) {
+		try {
+			Departamento nuevo = departamentoServicio.saveOrUpdate(dept);
+			if (nuevo != null) {
+				addMensaje(true, "se ha creado un departamento con id: " + nuevo.getDeptno());
+			} else {
+				addMensaje(true, " El departamento no se ha creado correctamente");
+			}
+			getAllDepartamentos();
+		} catch (Exception ex) {
+			addMensaje(true, "Ha ocurrido un error y no se ha podido crear el departamento");
 		}
 	}
 
@@ -176,7 +223,7 @@ public class TxWindow extends JFrame {
 		defModel.addAll(departamentos);
 
 		JListAllDepts.setModel(defModel);
-		
+
 	}
 
 }

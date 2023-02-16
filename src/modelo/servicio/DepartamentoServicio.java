@@ -23,7 +23,9 @@ public class DepartamentoServicio implements IDepartamentoServicio {
 		return departamentos;
 	}
 
-	public Departamento create(Departamento d) {
+
+
+	public Departamento saveOrUpdate(Departamento d) {
 		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
@@ -31,7 +33,7 @@ public class DepartamentoServicio implements IDepartamentoServicio {
 		try {
 			tx = session.beginTransaction();
 
-			session.save(d);
+			session.saveOrUpdate(d);
 			tx.commit();
 		} catch (Exception ex) {
 			System.out.println("Ha ocurrido una excepción en create Dept: " + ex.getMessage());
@@ -44,5 +46,4 @@ public class DepartamentoServicio implements IDepartamentoServicio {
 		}
 		return d;
 	}
-
 }

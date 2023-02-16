@@ -30,10 +30,10 @@ public class CreateNewDeptDialog extends JDialog {
 	private JTextField textFieldNombreDept;
 	private JButton okButton;
 	
-	private Departamento departamentoACrear=null;
+	private Departamento departamentoACrearOActualizar=null;
 	
 	public Departamento getResult() {
-		return this.departamentoACrear;
+		return this.departamentoACrearOActualizar;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class CreateNewDeptDialog extends JDialog {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		okButton = new JButton("Crear");
+		okButton = new JButton("Guardar");
 
 		okButton.setActionCommand("OK");
 		buttonPane.add(okButton);
@@ -95,7 +95,7 @@ public class CreateNewDeptDialog extends JDialog {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				departamentoACrear=null;
+				departamentoACrearOActualizar=null;
 				CreateNewDeptDialog.this.dispose();
 				
 			}
@@ -108,9 +108,9 @@ public class CreateNewDeptDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (!(textFieldUbicacion.getText().trim().equals(""))
 						&& !(textFieldNombreDept.getText().trim().equals(""))) {
-					departamentoACrear = new Departamento();
-					departamentoACrear.setDname(textFieldNombreDept.getText().trim());
-					departamentoACrear.setLoc(textFieldUbicacion.getText().trim());
+					departamentoACrearOActualizar = new Departamento();
+					departamentoACrearOActualizar.setDname(textFieldNombreDept.getText().trim());
+					departamentoACrearOActualizar.setLoc(textFieldUbicacion.getText().trim());
 					CreateNewDeptDialog.this.dispose();
 				}
 			}
@@ -120,9 +120,15 @@ public class CreateNewDeptDialog extends JDialog {
 
 	}
 
-	public CreateNewDeptDialog(Window owner, ModalityType modalityType) {
-		super(owner, modalityType);
+	public CreateNewDeptDialog(Window owner, String title, ModalityType modalityType, Departamento dept) {
+		super(owner, title, modalityType);
 		initComponents();
+		departamentoACrearOActualizar=dept;
+		if(departamentoACrearOActualizar!=null) {
+			textFieldNombreDept.setText(departamentoACrearOActualizar.getDname());
+			textFieldUbicacion.setText(departamentoACrearOActualizar.getLoc());
+			
+		}
 		this.setLocationRelativeTo(owner);
 	}
 	
