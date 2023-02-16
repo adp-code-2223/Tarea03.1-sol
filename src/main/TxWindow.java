@@ -47,6 +47,7 @@ public class TxWindow extends JFrame {
 	private JList JListAllDepts;
 
 	private IDepartamentoServicio departamentoServicio;
+	private CreateNewDeptDialog createDialog;
 
 	/**
 	 * Launch the application.
@@ -113,13 +114,12 @@ public class TxWindow extends JFrame {
 
 		JButton btnCrearNuevoDepartamento = new JButton("Crear nuevo departamento");
 		btnCrearNuevoDepartamento.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent e) {
 
-				  JFrame owner = (JFrame) SwingUtilities.getRoot((Component)e.getSource());
-				   CreateNewDeptDialog createDialog = new CreateNewDeptDialog(owner,Dialog.ModalityType.DOCUMENT_MODAL);
-				   createDialog.setVisible(true);
-				
+				JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
+				createDialog = new CreateNewDeptDialog(owner, Dialog.ModalityType.DOCUMENT_MODAL);
+				showDialog();
 			}
 		});
 		btnCrearNuevoDepartamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -133,7 +133,6 @@ public class TxWindow extends JFrame {
 				DefaultListModel<Departamento> defModel = new DefaultListModel<>();
 
 				defModel.addAll(departamentos);
-				
 
 				JListAllDepts.setModel(defModel);
 				addMensaje(true, "Se han recuperado: " + departamentos.size() + " departamentos");
@@ -153,4 +152,18 @@ public class TxWindow extends JFrame {
 		mensajes_text_Area.setText(oldText);
 
 	}
+
+	private void showDialog() {
+		createDialog.setVisible(true);
+		Departamento departamentoACrear = createDialog.getResult();
+		if (departamentoACrear != null) {
+			addMensaje(true, "se ha insertado data para crear dept");
+
+		} else {
+			addMensaje(true, "No hay que crear nuevo dept");
+
+		}
+
+	}
+
 }

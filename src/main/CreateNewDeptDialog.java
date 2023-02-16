@@ -29,6 +29,12 @@ public class CreateNewDeptDialog extends JDialog {
 	private JTextField textFieldUbicacion;
 	private JTextField textFieldNombreDept;
 	private JButton okButton;
+	
+	private Departamento departamentoACrear=null;
+	
+	public Departamento getResult() {
+		return this.departamentoACrear;
+	}
 
 	/**
 	 * Launch the application.
@@ -87,6 +93,13 @@ public class CreateNewDeptDialog extends JDialog {
 		getRootPane().setDefaultButton(okButton);
 
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				departamentoACrear=null;
+				CreateNewDeptDialog.this.dispose();
+				
+			}
+		});
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
@@ -95,9 +108,10 @@ public class CreateNewDeptDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (!(textFieldUbicacion.getText().trim().equals(""))
 						&& !(textFieldNombreDept.getText().trim().equals(""))) {
-					Departamento newDept = new Departamento();
-					newDept.setDname(textFieldNombreDept.getText().trim());
-					newDept.setLoc(textFieldUbicacion.getText().trim());
+					departamentoACrear = new Departamento();
+					departamentoACrear.setDname(textFieldNombreDept.getText().trim());
+					departamentoACrear.setLoc(textFieldUbicacion.getText().trim());
+					CreateNewDeptDialog.this.dispose();
 				}
 			}
 		};
