@@ -129,13 +129,7 @@ public class TxWindow extends JFrame {
 
 		ActionListener showAllDepartamentosActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Departamento> departamentos = departamentoServicio.getAll();
-				DefaultListModel<Departamento> defModel = new DefaultListModel<>();
-
-				defModel.addAll(departamentos);
-
-				JListAllDepts.setModel(defModel);
-				addMensaje(true, "Se han recuperado: " + departamentos.size() + " departamentos");
+				getAllDepartamentos();
 			}
 		};
 		btnShowAllDepts.addActionListener(showAllDepartamentosActionListener);
@@ -157,13 +151,32 @@ public class TxWindow extends JFrame {
 		createDialog.setVisible(true);
 		Departamento departamentoACrear = createDialog.getResult();
 		if (departamentoACrear != null) {
-			addMensaje(true, "se ha insertado data para crear dept");
 
-		} else {
-			addMensaje(true, "No hay que crear nuevo dept");
+			try {
+				Departamento nuevo = departamentoServicio.create(departamentoACrear);
+				if(nuevo!=null) {
+					addMensaje(true, "se ha creado un departamento con id: " + nuevo.getDeptno());
+				}
+				else {
+					addMensaje(true, " El departamento no se ha creado correctamente");
+				}
+				getAllDepartamentos();
+			} catch (Exception ex) {
+				addMensaje(true, "Ha ocurrido un error y no se ha podido crear el departamento");
+			}
 
 		}
+	}
 
+	private void getAllDepartamentos() {
+		List<Departamento> departamentos = departamentoServicio.getAll();
+		addMensaje(true, "Se han recuperado: " + departamentos.size() + " departamentos");
+		DefaultListModel<Departamento> defModel = new DefaultListModel<>();
+
+		defModel.addAll(departamentos);
+
+		JListAllDepts.setModel(defModel);
+		
 	}
 
 }
