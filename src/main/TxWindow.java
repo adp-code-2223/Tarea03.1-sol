@@ -31,6 +31,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import java.awt.Rectangle;
+import java.awt.Dimension;
 
 public class TxWindow extends JFrame {
 
@@ -94,16 +96,17 @@ public class TxWindow extends JFrame {
 		btnShowAllDepts.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnShowAllDepts.setBounds(50, 37, 208, 36);
 		panel.add(btnShowAllDepts);
-		
-		 JListAllDepts = new JList();
-		JListAllDepts.setBounds(347, 22, 330, 228);
 		//panel.add(JListAllDepts);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(362, 237, 299, -198);
-		panel.add(scrollPane_1);
-		 scrollPane.setViewportView(JListAllDepts);
+		JScrollPane scrollPanel_in_JlistAllDepts = new JScrollPane();
+		//scrollPane_1.setBounds(284, 237, 505, -200);
+		panel.add(scrollPanel_in_JlistAllDepts);
 
+		 JListAllDepts = new JList();
+		 panel.add(JListAllDepts);
+		 
+		 JListAllDepts.setBounds(403, 37, 377, 200);
+		//scrollPanel_in_JlistAllDepts.setViewportView(JListAllDepts);
 				
 		
 		ActionListener showAllDepartamentosActionListener =new ActionListener() {
@@ -130,7 +133,8 @@ public class TxWindow extends JFrame {
 
 				//frame.getContentPane().repaint(); 
 					JListAllDepts.setModel(defModel);
-			
+				//JListAllDepts.setSize(new Dimension(scrollPane.getWidth(),scrollPane_1.getHeight()));
+					addMensaje(true, "Se han recuperado: " +departamentos.size() + " departamentos");
 			}
 		};
 		btnShowAllDepts.addActionListener(showAllDepartamentosActionListener);
