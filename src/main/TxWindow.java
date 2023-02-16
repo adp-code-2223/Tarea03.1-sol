@@ -41,6 +41,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class TxWindow extends JFrame {
 
@@ -52,6 +54,7 @@ public class TxWindow extends JFrame {
 	private IDepartamentoServicio departamentoServicio;
 	private CreateNewDeptDialog createDialog;
 	private JButton btnModificarDepartamento;
+	private JButton btnEliminarDepartamento;
 
 	/**
 	 * Launch the application.
@@ -115,39 +118,66 @@ public class TxWindow extends JFrame {
 		btnModificarDepartamento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIx = JListAllDepts.getSelectedIndex();
-				Departamento d = (Departamento) JListAllDepts.getModel().getElementAt(selectedIx);
-				if (d != null) {
-					JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
+				if (selectedIx > -1) {
+					Departamento departamento = (Departamento) JListAllDepts.getModel().getElementAt(selectedIx);
+					if (departamento != null) {
+						
+						JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
 
-					createDialog = new CreateNewDeptDialog(owner, "Modificar departamento", Dialog.ModalityType.DOCUMENT_MODAL, d);
-					showDialog();
+						createDialog = new CreateNewDeptDialog(owner, "Modificar departamento",
+								Dialog.ModalityType.DOCUMENT_MODAL, departamento);
+						showDialog();
+					}
 				}
 			}
 		});
 
 		JListAllDepts = new JList();
-		JListAllDepts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JListAllDepts.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int[] selectedIx = TxWindow.this.JListAllDepts.getSelectedIndices();
-				for (int i = 0; i < selectedIx.length; i++) {
-					Departamento d = (Departamento) TxWindow.this.JListAllDepts.getModel().getElementAt(selectedIx[i]);
-					if (d != null) {
+		JListAllDepts.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (e.getValueIsAdjusting() == false) {
+					int selectedIx = JListAllDepts.getSelectedIndex();
+					btnModificarDepartamento.setEnabled((selectedIx > -1));
+					btnEliminarDepartamento.setEnabled((selectedIx > -1));
+					if (selectedIx > -1) {
+						Departamento d = (Departamento) TxWindow.this.JListAllDepts.getModel().getElementAt(selectedIx);
+//					if(d!=null){
 						addMensaje(true, "Se ha seleccionado el d: " + d);
-						btnModificarDepartamento.setEnabled(true);
-					} else {
-						btnModificarDepartamento.setEnabled(false);
-
 					}
 				}
-				if (selectedIx.length == 0) {
-					btnModificarDepartamento.setEnabled(false);
-
-				}
-
 			}
 		});
+		JListAllDepts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		JListAllDepts.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				int selectedIx = JListAllDepts.getSelectedIndex();
+//				btnModificarDepartamento.setEnabled((selectedIx > -1));
+//				btnEliminarDepartamento.setEnabled((selectedIx > -1));
+//				if (selectedIx > -1) {
+//					Departamento d = (Departamento) TxWindow.this.JListAllDepts.getModel().getElementAt(selectedIx);
+////					if(d!=null){
+//					addMensaje(true, "Se ha seleccionado el d: " + d);
+//				}
+//
+////				int[] selectedIx = TxWindow.this.JListAllDepts.getSelectedIndices();
+////				for (int i = 0; i < selectedIx.length; i++) {
+////					Departamento d = (Departamento) TxWindow.this.JListAllDepts.getModel().getElementAt(selectedIx[i]);
+////					if (d != null) {
+////						addMensaje(true, "Se ha seleccionado el d: " + d);
+////						btnModificarDepartamento.setEnabled(true);
+////					} else {
+////						btnModificarDepartamento.setEnabled(false);
+////
+////					}
+////				}
+////				if (selectedIx.length == 0) {
+////					btnModificarDepartamento.setEnabled(false);
+////
+////				}
+//
+//			}
+//		});
 		panel.add(JListAllDepts);
 
 		JListAllDepts.setBounds(403, 37, 377, 200);
@@ -158,7 +188,8 @@ public class TxWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
-				createDialog = new CreateNewDeptDialog(owner, "Crear nuevo departamento", Dialog.ModalityType.DOCUMENT_MODAL, null);
+				createDialog = new CreateNewDeptDialog(owner, "Crear nuevo departamento",
+						Dialog.ModalityType.DOCUMENT_MODAL, null);
 				showDialog();
 			}
 		});
@@ -170,6 +201,36 @@ public class TxWindow extends JFrame {
 		btnModificarDepartamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnModificarDepartamento.setBounds(50, 139, 208, 36);
 		panel.add(btnModificarDepartamento);
+
+		btnEliminarDepartamento = new JButton("Eliminar departamento");
+		btnEliminarDepartamento.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedIx = JListAllDepts.getSelectedIndex();
+				if (selectedIx > -1) {
+					Departamento d = (Departamento) JListAllDepts.getModel().getElementAt(selectedIx);
+					if (d != null) {
+						try {
+							boolean exito = departamentoServicio.delete(d.getDeptno());
+							if (exito) {
+								addMensaje(true, "Se ha eliminado el dept con id: " + d.getDeptno());
+								getAllDepartamentos();
+							}
+						} catch (exceptions.InstanceNotFoundException e1) {
+							addMensaje(true, "No se ha podido borrar el departamento. No se ha encontrado con id: "
+									+ d.getDeptno());
+						} catch (Exception ex) {
+							addMensaje(true, "No se ha podido borrar el departamento. ");
+							System.out.println("Exception: " + ex.getMessage());
+							ex.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		btnEliminarDepartamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnEliminarDepartamento.setEnabled(false);
+		btnEliminarDepartamento.setBounds(50, 201, 208, 36);
+		panel.add(btnEliminarDepartamento);
 		// scrollPanel_in_JlistAllDepts.setViewportView(JListAllDepts);
 
 		ActionListener showAllDepartamentosActionListener = new ActionListener() {
@@ -205,11 +266,12 @@ public class TxWindow extends JFrame {
 		try {
 			Departamento nuevo = departamentoServicio.saveOrUpdate(dept);
 			if (nuevo != null) {
-				addMensaje(true, "se ha creado un departamento con id: " + nuevo.getDeptno());
+				addMensaje(true, "Se ha creado un departamento con id: " + nuevo.getDeptno());
+				getAllDepartamentos();
 			} else {
-				addMensaje(true, " El departamento no se ha creado correctamente");
+				addMensaje(true, " El departamento no se ha creado/actualizado correctamente");
 			}
-			getAllDepartamentos();
+			
 		} catch (Exception ex) {
 			addMensaje(true, "Ha ocurrido un error y no se ha podido crear el departamento");
 		}

@@ -108,7 +108,9 @@ public class CreateNewDeptDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (!(textFieldUbicacion.getText().trim().equals(""))
 						&& !(textFieldNombreDept.getText().trim().equals(""))) {
-					departamentoACrearOActualizar = new Departamento();
+					if(departamentoACrearOActualizar==null) {
+						departamentoACrearOActualizar= new Departamento();
+					}
 					departamentoACrearOActualizar.setDname(textFieldNombreDept.getText().trim());
 					departamentoACrearOActualizar.setLoc(textFieldUbicacion.getText().trim());
 					CreateNewDeptDialog.this.dispose();

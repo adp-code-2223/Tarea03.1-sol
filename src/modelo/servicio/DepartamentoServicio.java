@@ -3,6 +3,8 @@ package modelo.servicio;
 import java.util.List;
 import java.util.Set;
 
+import exceptions.InstanceNotFoundException;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -45,5 +47,35 @@ public class DepartamentoServicio implements IDepartamentoServicio {
 			session.close();
 		}
 		return d;
+	}
+	
+	public boolean delete(int deptId) throws InstanceNotFoundException {
+		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		boolean exito=false;
+
+		try {
+			tx = session.beginTransaction();
+			Departamento dept = session.get(Departamento.class, deptId);
+			if(dept!=null) {
+			session.remove(dept);
+			}
+			else {
+				throw new InstanceNotFoundException(Departamento.class.getName() + " id: "+deptId);
+				}
+			tx.commit();
+			exito=true;
+		} catch (Exception ex) {
+			System.out.println("Ha ocurrido una excepción en create Dept: " + ex.getMessage());
+			if (tx != null) {
+				tx.rollback();
+			}
+		
+			throw ex;
+		} finally {
+			session.close();
+		}
+		return exito;
 	}
 }
