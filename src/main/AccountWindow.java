@@ -224,6 +224,7 @@ public class AccountWindow extends JFrame {
 					int selectedIx = JListAllAccounts.getSelectedIndex();
 					btnModificarImporteCuenta.setEnabled((selectedIx > -1));
 					btnEliminarCuenta.setEnabled((selectedIx > -1));
+					btnCrearNuevaAccount.setEnabled((selectedIx > -1));
 					if (selectedIx > -1) {
 						Account accountd = (Account) JListAllAccounts.getModel().getElementAt(selectedIx);
 						if (accountd != null) {
