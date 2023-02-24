@@ -16,7 +16,7 @@
             <key>
                 <column name="DEPTNO"/>
             </key>
-            <one-to-many class="modelo.Emp"/>
+            <one-to-many class="modelo.Empleado"/>
         </set>
     </class>
 </hibernate-mapping>

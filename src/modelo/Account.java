@@ -15,7 +15,7 @@ public class Account implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer accountno;
-	private Emp emp;
+	private Empleado emp;
 	private BigDecimal amount;
 	private Set<AccMovement> accMovementsDest = new HashSet<AccMovement>(0);
 	private Set<AccMovement> accMovementsOrigen = new HashSet<AccMovement>(0);
@@ -23,12 +23,12 @@ public class Account implements java.io.Serializable {
 	public Account() {
 	}
 
-	public Account(Emp emp, BigDecimal amount) {
+	public Account(Empleado emp, BigDecimal amount) {
 		this.emp = emp;
 		this.amount = amount;
 	}
 
-	public Account(Emp emp, BigDecimal amount, Set<AccMovement> accMovementsDest,Set<AccMovement> accMovementsOrigin ) {
+	public Account(Empleado emp, BigDecimal amount, Set<AccMovement> accMovementsDest,Set<AccMovement> accMovementsOrigin ) {
 		this.emp = emp;
 		this.amount = amount;
 		this.accMovementsDest = accMovementsDest;
@@ -43,11 +43,11 @@ public class Account implements java.io.Serializable {
 		this.accountno = accountno;
 	}
 
-	public Emp getEmp() {
+	public Empleado getEmp() {
 		return this.emp;
 	}
 
-	public void setEmp(Emp emp) {
+	public void setEmp(Empleado emp) {
 		this.emp = emp;
 	}
 
@@ -75,6 +75,11 @@ public class Account implements java.io.Serializable {
 
 	public void setAccMovementsDest(Set<AccMovement> accMovementsDest) {
 		this.accMovementsDest = accMovementsDest;
+	}
+
+	@Override
+	public String toString() {
+		return "Account [accountno=" + accountno + ", emp_no=" + emp.getEmpno() + ", amount=" + amount + "]";
 	}
 	
 

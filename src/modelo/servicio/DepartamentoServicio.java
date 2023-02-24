@@ -1,14 +1,12 @@
 package modelo.servicio;
 
 import java.util.List;
-import java.util.Set;
-
-import exceptions.InstanceNotFoundException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import exceptions.InstanceNotFoundException;
 import modelo.Departamento;
 import util.SessionFactoryUtil;
 
@@ -19,6 +17,7 @@ public class DepartamentoServicio implements IDepartamentoServicio {
 		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
 		Session session = sessionFactory.openSession();
 
+		@SuppressWarnings("unchecked")
 		List<Departamento> departamentos = session.createQuery("select d from Departamento d order by d.dname").list();
 		session.close();
 
