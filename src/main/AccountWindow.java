@@ -181,11 +181,10 @@ public class AccountWindow extends JFrame {
 
 							AccountWindow.this.empleado = empleadoServicio.find(empno);
 						}
-						//Establezco la relación entre la nueva Account y el empleado
+						// Establezco la relación entre la nueva Account y el empleado
 						nuevaAcc.setEmp(AccountWindow.this.empleado);
 						JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
 
-						
 						createDialog = new CreateUpdateAccountDialog(owner, "Crear nueva cuenta",
 								Dialog.ModalityType.DOCUMENT_MODAL, nuevaAcc);
 						showDialog(BigDecimal.ZERO);
@@ -203,7 +202,7 @@ public class AccountWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIx = JListAllAccounts.getSelectedIndex();
 				if (selectedIx > -1) {
-					//Estas cuentas ya vienen con un proxy de su empleado y con su empno
+					// Estas cuentas ya vienen con un proxy de su empleado y con su empno
 					Account account = (Account) JListAllAccounts.getModel().getElementAt(selectedIx);
 					if (account != null) {
 
@@ -226,7 +225,7 @@ public class AccountWindow extends JFrame {
 					int selectedIx = JListAllAccounts.getSelectedIndex();
 					btnModificarImporteCuenta.setEnabled((selectedIx > -1));
 					btnEliminarCuenta.setEnabled((selectedIx > -1));
-				
+
 					if (selectedIx > -1) {
 						Account accountd = (Account) JListAllAccounts.getModel().getElementAt(selectedIx);
 						if (accountd != null) {
@@ -346,13 +345,11 @@ public class AccountWindow extends JFrame {
 				getAllAccounts();
 				addMensaje(true, "Se ha creado el movimiento: " + movimiento);
 
-
 			} catch (InstanceNotFoundException e) {
 				addMensaje(true, "No se ha encontrado la cuenta con número: " + cuenta.getAccountno());
-			}
-			catch(Exception e2) {
+			} catch (Exception e2) {
 				addMensaje(true, "No se ha podido modificar la cuenta con número: " + cuenta.getAccountno());
-				
+
 			}
 		} else {
 			addMensaje(true, "No ha habido variación de cantidad en la cuenta" + cuenta.getAccountno());
@@ -378,13 +375,17 @@ public class AccountWindow extends JFrame {
 	private void getAllAccounts() {
 		int empno = getEmpnoFromTextField();
 		if (empno != -1) {
-			List<Account> accounts = accountServicio.getAccountsByEmpno(empno);
-			addMensaje(true, "Se han recuperado: " + accounts.size() + " cuentas");
-			DefaultListModel<Account> defModel = new DefaultListModel<>();
+			try {
+				List<Account> accounts = accountServicio.getAccountsByEmpno(empno);
+				addMensaje(true, "Se han recuperado: " + accounts.size() + " cuentas");
+				DefaultListModel<Account> defModel = new DefaultListModel<>();
 
-			defModel.addAll(accounts);
+				defModel.addAll(accounts);
 
-			JListAllAccounts.setModel(defModel);
+				JListAllAccounts.setModel(defModel);
+			} catch (Exception ex) {
+				addMensaje(true, "Ha habido un error y no se han podido recuperar las cuentas del empleado: " + empno);
+			}
 		} else {
 			addMensaje(true, "El número de empleado no es correcto");
 		}

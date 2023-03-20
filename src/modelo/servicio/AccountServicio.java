@@ -2,6 +2,7 @@ package modelo.servicio;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -147,15 +148,28 @@ public class AccountServicio implements IAccountServicio {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Account> getAccountsByEmpno(int empno) {
+		Session session =null;
+		List<Account> accounts  = new ArrayList<>(0);
+		try {
 		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
+		session= sessionFactory.openSession();
 
-		@SuppressWarnings("unchecked")
-		List<Account> accounts = session.createQuery("select a from Account a where a.emp.empno =:empno")
+		
+		accounts= session.createQuery("select a from Account a where a.emp.empno =:empno")
 				.setParameter("empno", empno).list();
 
 		session.close();
+		} catch (Exception ex) {
+			System.out.println("Ha ocurrido una exception: " + ex.getMessage());
+			
+			throw ex;
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
 		return accounts;
 
 	}
