@@ -23,8 +23,8 @@ public class Empleado implements java.io.Serializable {
 	private Date hiredate;
 	private BigDecimal sal;
 	private BigDecimal comm;
-	private Set<Account> accounts = new HashSet(0);
-	private Set<Empleado> subordinados = new HashSet(0);
+	private Set<Account> accounts = new HashSet<Account>(0);
+	private Set<Empleado> subordinados = new HashSet<Empleado>(0);
 
 	public Empleado() {
 	}

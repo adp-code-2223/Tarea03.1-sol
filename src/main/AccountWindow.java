@@ -37,7 +37,6 @@ import modelo.servicio.IAccountServicio;
 import modelo.servicio.IEmpleadoServicio;
 import exceptions.InstanceNotFoundException;
 
-
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
@@ -182,9 +181,11 @@ public class AccountWindow extends JFrame {
 
 							AccountWindow.this.empleado = empleadoServicio.find(empno);
 						}
+						//Establezco la relación entre la nueva Account y el empleado
 						nuevaAcc.setEmp(AccountWindow.this.empleado);
 						JFrame owner = (JFrame) SwingUtilities.getRoot((Component) e.getSource());
 
+						
 						createDialog = new CreateUpdateAccountDialog(owner, "Crear nueva cuenta",
 								Dialog.ModalityType.DOCUMENT_MODAL, nuevaAcc);
 						showDialog(BigDecimal.ZERO);
@@ -202,6 +203,7 @@ public class AccountWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIx = JListAllAccounts.getSelectedIndex();
 				if (selectedIx > -1) {
+					//Estas cuentas ya vienen con un proxy de su empleado y con su empno
 					Account account = (Account) JListAllAccounts.getModel().getElementAt(selectedIx);
 					if (account != null) {
 
@@ -224,11 +226,11 @@ public class AccountWindow extends JFrame {
 					int selectedIx = JListAllAccounts.getSelectedIndex();
 					btnModificarImporteCuenta.setEnabled((selectedIx > -1));
 					btnEliminarCuenta.setEnabled((selectedIx > -1));
-					btnCrearNuevaAccount.setEnabled((selectedIx > -1));
+				
 					if (selectedIx > -1) {
 						Account accountd = (Account) JListAllAccounts.getModel().getElementAt(selectedIx);
 						if (accountd != null) {
-							addMensaje(true, "Se ha seleccionado el d: " + accountd);
+							addMensaje(true, "Se ha seleccionado la cuenta con id: " + accountd);
 						}
 					}
 				}
@@ -274,7 +276,7 @@ public class AccountWindow extends JFrame {
 					textIntroducido = ((JTextField) e.getSource()).getText().trim();
 					try {
 						int accId = Integer.parseInt(textIntroducido);
-
+//Se guarda en un atributo de la clase
 						AccountWindow.this.empleado = empleadoServicio.find(accId);
 
 						if (empleado != null) {
@@ -328,7 +330,7 @@ public class AccountWindow extends JFrame {
 	}
 
 	private void update(Account cuenta, BigDecimal oldAmount) {
-		addMensaje(true,"La diferencia entre importes es: old:" +oldAmount + " new: " + cuenta.getAmount());
+		addMensaje(true, "La diferencia entre importes es: old:" + oldAmount + " new: " + cuenta.getAmount());
 		BigDecimal diferencia = oldAmount.subtract(cuenta.getAmount());
 		// oldAmount < cantidad actual, diferencia es negativa-> se ha ingresado dinero
 		// +diferencia
@@ -339,17 +341,18 @@ public class AccountWindow extends JFrame {
 
 		if (diferencia.compareTo(BigDecimal.ZERO) != 0) {
 			try {
-				AccMovement movimiento= accountServicio.autoTransferir(cuenta.getAccountno(),
+				AccMovement movimiento = accountServicio.autoTransferir(cuenta.getAccountno(),
 						diferencia.doubleValue() * (-1));
 				getAllAccounts();
-				addMensaje(true, "Se ha creado el movimiento: " +movimiento);
-//			} catch (UnsupportedOperationException e) {
-//				addMensaje(true, "No se puede realizar una transferencia sin variación de saldo");
-//			} catch (SaldoInsuficienteException e) {
-//				addMensaje(true, "No hay saldo suficiente");
+				addMensaje(true, "Se ha creado el movimiento: " + movimiento);
+
 
 			} catch (InstanceNotFoundException e) {
 				addMensaje(true, "No se ha encontrado la cuenta con número: " + cuenta.getAccountno());
+			}
+			catch(Exception e2) {
+				addMensaje(true, "No se ha podido modificar la cuenta con número: " + cuenta.getAccountno());
+				
 			}
 		} else {
 			addMensaje(true, "No ha habido variación de cantidad en la cuenta" + cuenta.getAccountno());

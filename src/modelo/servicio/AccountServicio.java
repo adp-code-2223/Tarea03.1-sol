@@ -151,6 +151,7 @@ public class AccountServicio implements IAccountServicio {
 		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
 		Session session = sessionFactory.openSession();
 
+		@SuppressWarnings("unchecked")
 		List<Account> accounts = session.createQuery("select a from Account a where a.emp.empno =:empno")
 				.setParameter("empno", empno).list();
 
