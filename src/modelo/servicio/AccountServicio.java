@@ -150,20 +150,18 @@ public class AccountServicio implements IAccountServicio {
 
 	@SuppressWarnings("unchecked")
 	public List<Account> getAccountsByEmpno(int empno) {
-		Session session =null;
-		List<Account> accounts  = new ArrayList<>(0);
+		Session session = null;
+		List<Account> accounts = new ArrayList<>(0);
 		try {
-		SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
-		session= sessionFactory.openSession();
+			SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactory();
+			session = sessionFactory.openSession();
 
-		
-		accounts= session.createQuery("select a from Account a where a.emp.empno =:empno")
-				.setParameter("empno", empno).list();
+			accounts = session.createQuery("select a from Account a where a.emp.empno =:empno")
+					.setParameter("empno", empno).list();
 
-		session.close();
 		} catch (Exception ex) {
 			System.out.println("Ha ocurrido una exception: " + ex.getMessage());
-			
+
 			throw ex;
 		} finally {
 			if (session != null) {
